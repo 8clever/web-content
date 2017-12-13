@@ -58,3 +58,4 @@ typings/
 .env
 public/stylesheets/style.css
 
+.idea/
