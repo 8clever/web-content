@@ -6,7 +6,7 @@
 		</head>
 	<body>
 		{> "header" /}
-		<div id="maincontent">
+		<div id="maincontent" class="container">
 			{+ "body" /}
 		</div>
 		{> "footer" /}

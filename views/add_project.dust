@@ -1,23 +1,11 @@
-<!DOCTYPE html>
-	<html>
-		<head>
-			<title>{title}</title>
-			<link rel='stylesheet' href='/stylesheets/style.css' />
-		</head>
-	<body>
-		{> "header" /}
-		<div id="maincontent">
-			<h1>{title}</h1>
-		</div>
-			<div>
-	            <form  action='add_project'>
-								<label for = 'project'>project</label>
-								<input type='text' name='project')</br>
-								<button type = 'submit'> Add</button>
-				</form>
-			</div>
+{> "layout" /}
 
-		<script src="/js/jquery.js"></script>
-		<script src="/js/bootstrap.js" ></script>
-	</body>
-</html>
+{<body}
+	<form>
+		<div class="form-group">
+			<input type='text' class="form-control" name='project' placeholder="Project Name" />
+		</div>
+		<button class="btn btn-primary">Save</button>
+	</form>
+{/body}
+
