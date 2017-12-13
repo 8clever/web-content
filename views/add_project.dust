@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+	<html>
+		<head>
+			<title>{title}</title>
+			<link rel='stylesheet' href='/stylesheets/style.css' />
+		</head>
+	<body>
+		{> "header" /}
+		<div id="maincontent">
+			<h1>{title}</h1>
+		</div>
+			<div>
+	            <form  action='add_project'>
+								<label for = 'project'>project</label>
+								<input type='text' name='project')</br>
+								<button type = 'submit'> Add</button>
+				</form>
+			</div>
+
+		<script src="/js/jquery.js"></script>
+		<script src="/js/bootstrap.js" ></script>
+	</body>
+</html>
