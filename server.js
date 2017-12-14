@@ -29,6 +29,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.get("/js/:file", sendJs);
+app.get("/fonts/:file", sendFonts);
 app.use(lessMiddleware(path.join(__dirname, 'public'), { once: true }));
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: oneYear }));
 app.set('views', path.resolve(__dirname, './views'));
@@ -46,12 +47,28 @@ function prepareCtx () {
 	return ctx;
 }
 
+function sendFonts(req, res, next) {
+	let fontPath = getAllowedFonts()[req.params.file];
+	if (!fontPath) return next();
+	res.sendFile(fontPath, {
+		maxAge: oneYear
+	});
+}
+
 function sendJs(req, res, next) {
 	let jsPath = getAllowedJs()[req.params.file];
 	if (!jsPath) return next();
 	res.sendFile(jsPath, {
 		maxAge: oneYear
 	});
+}
+
+function getAllowedFonts () {
+	return {
+		"fontawesome-webfont.woff2": path.join(__dirname, "node_modules/font-awesome/fonts/fontawesome-webfont.woff2"),
+		"fontawesome-webfont.woff": path.join(__dirname, "node_modules/font-awesome/fonts/fontawesome-webfont.woff"),
+		"fontawesome-webfont.ttf": path.join(__dirname, "node_modules/font-awesome/fonts/fontawesome-webfont.ttf")
+	}
 }
 
 function getAllowedJs () {
