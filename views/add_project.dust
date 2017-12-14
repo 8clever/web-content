@@ -11,7 +11,9 @@
 					<div class="form-group">
 						<input type='text' class="form-control" name='name' placeholder="Project Name" />
 					</div>
-					<button class="btn btn-primary">Save</button>
+					<div class="text-right form-group">
+						<button class="btn btn-primary">Save</button>
+					</div>
 				</form>
 			</div>
 		</div>
