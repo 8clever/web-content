@@ -13,11 +13,25 @@
 				<li class="dropdown">
 					<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes">
 						Projects
-						&nbsp;<span class="caret"></span>
+						&nbsp;<span class="fa fa-caret-down"></span>
 					</a>
 					<ul class="dropdown-menu" aria-labelledby="themes">
-						<li><a href="{prefix}add_project">add content</a></li>
+						<li>
+							<a href="{prefix}add_project">
+								<i class="fa fa-plus"></i>&nbsp;
+								add Project
+							</a>
+						</li>
 					</ul>
+				</li>
+			</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="{prefix}logout">
+						<i class="fa fa-sign-out"></i>&nbsp;
+						Sign Out
+					</a>
 				</li>
 			</ul>
 		</div>
