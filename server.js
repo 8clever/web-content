@@ -8,11 +8,13 @@ let lessMiddleware = require('less-middleware');
 let Driver = require("mydb-driver");
 let fs = require("fs");
 let ctx = prepareCtx();
+let oneYear = 1000*60*60*24*365;
 
 Promise.expressify = expressify;
 
 // add project essences
 ctx.api.essence.add(require("./essences/project"), "project");
+ctx.api.essence.add(require("./essences/content"), "content");
 
 // routes
 let index = require('./routes/index')(ctx);
@@ -27,8 +29,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.get("/js/:file", sendJs);
-app.use(lessMiddleware(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(lessMiddleware(path.join(__dirname, 'public'), { once: true }));
+app.use(express.static(path.join(__dirname, 'public'), { maxAge: oneYear }));
 app.set('views', path.resolve(__dirname, './views'));
 app.use('/', prepareLocals, index);
 app.use(catch404);
@@ -47,7 +49,9 @@ function prepareCtx () {
 function sendJs(req, res, next) {
 	let jsPath = getAllowedJs()[req.params.file];
 	if (!jsPath) return next();
-	res.sendFile(jsPath);
+	res.sendFile(jsPath, {
+		maxAge: oneYear
+	});
 }
 
 function getAllowedJs () {

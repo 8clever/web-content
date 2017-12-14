@@ -9,23 +9,6 @@
 			</button>
 		</div>
 		<div class="navbar-collapse collapse" id="navbar-main">
-			<ul class="nav navbar-nav">
-				<li class="dropdown">
-					<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes">
-						Projects
-						&nbsp;<span class="fa fa-caret-down"></span>
-					</a>
-					<ul class="dropdown-menu" aria-labelledby="themes">
-						<li>
-							<a href="{prefix}add_project">
-								<i class="fa fa-plus"></i>&nbsp;
-								add Project
-							</a>
-						</li>
-					</ul>
-				</li>
-			</ul>
-
 			<ul class="nav navbar-nav navbar-right">
 				<li>
 					<a href="{prefix}logout">

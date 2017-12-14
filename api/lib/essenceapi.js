@@ -58,7 +58,7 @@ function validate (object, name) {
 		let essValue = this.essences[name][key];
 		let objValue = object[key];
 
-		if (!objValue)
+		if (objValue === undefined)
 			throw new Error(`Object not have field (${key}).`);
 
 		if (_.isArray(essValue) && _.isArray(objValue)) {

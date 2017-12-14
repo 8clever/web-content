@@ -1,11 +1,20 @@
 {> "layout" /}
 
 {<body}
-	<form method="POST">
-		<div class="form-group">
-			<input type='text' class="form-control" name='name' placeholder="Project Name" />
+	<div class="row">
+		<div class="col-sm-3">
+			{> "project_list" /}
 		</div>
-		<button class="btn btn-primary">Save</button>
-	</form>
+		<div class="col-sm-9">
+			<div class="well">
+				<form method="POST">
+					<div class="form-group">
+						<input type='text' class="form-control" name='name' placeholder="Project Name" />
+					</div>
+					<button class="btn btn-primary">Save</button>
+				</form>
+			</div>
+		</div>
+	</div>
 {/body}
 

@@ -1,0 +1,18 @@
+<div class="form-group">
+	<ul class="nav nav-pills nav-stacked">
+		{#projects}
+			<li>
+				<a href="{prefix}project/{_id}" class="text-right">
+				<span class="pull-left">
+					{name}
+				</span>
+					<i class="fa fa-chevron-right"></i>
+				</a>
+			</li>
+		{/projects}
+	</ul>
+</div>
+<a href="{prefix}add_project" class="btn btn-default btn-block">
+	<i class="fa fa-plus"></i>&nbsp;
+	Add Project
+</a>
