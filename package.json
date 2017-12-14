@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node app"
   },
   "dependencies": {
     "body-parser": "~1.18.2",
@@ -16,7 +16,9 @@
     "express-dustjs": "^1.1.1",
     "jquery": "^3.2.1",
     "less-middleware": "~2.2.1",
+    "lodash": "^4.17.4",
     "morgan": "~1.9.0",
+    "mydb-driver": "git+https://github.com/8clever/mydb-drive.git",
     "serve-favicon": "~2.4.5"
   }
 }

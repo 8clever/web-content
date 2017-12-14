@@ -5,10 +5,17 @@ let logger = require('morgan');
 let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
 let lessMiddleware = require('less-middleware');
+let Driver = require("mydb-driver");
 let fs = require("fs");
+let ctx = prepareCtx();
+
+Promise.expressify = expressify;
+
+// add project essences
+ctx.api.essence.add(require("./essences/project"), "project");
 
 // routes
-let index = require('./routes/index');
+let index = require('./routes/index')(ctx);
 
 let app = express();
 let dust = require("express-dustjs");
@@ -23,11 +30,19 @@ app.get("/js/:file", sendJs);
 app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.resolve(__dirname, './views'));
-app.use('/', prepareCtx, index);
+app.use('/', prepareLocals, index);
 app.use(catch404);
 app.use(errorHandler);
 
 module.exports = app;
+
+function prepareCtx () {
+	let ctx = {};
+	ctx.cfg = require("./config.js");
+	ctx.driver = new Driver (ctx.cfg.mydb);
+	ctx.api = require("./api")(ctx);
+	return ctx;
+}
 
 function sendJs(req, res, next) {
 	let jsPath = getAllowedJs()[req.params.file];
@@ -42,7 +57,7 @@ function getAllowedJs () {
 	}
 }
 
-function prepareCtx (req, res, next) {
+function prepareLocals (req, res, next) {
   res.locals.prefix = "/";
   next();
 }
@@ -61,4 +76,12 @@ function errorHandler (err, req, res, next) {
 	// render the error page
 	res.status(err.status || 500);
 	res.render('error');
+}
+
+function expressify (fn) {
+	return function (req, res, next) {
+		fn(req, res).then(result => {
+			if (result === "next") return next();
+		}).catch(next);
+	}
 }

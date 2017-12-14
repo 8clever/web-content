@@ -1,5 +1,21 @@
 {> "layout" /}
 
 {<body}
-	<p>Welcome to admin panel</p>
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="list-group table-of-contents">
+				{#projects}
+					<a class="list-group-item" href="{prefix}project/{_id}">{name}</a>
+				{/projects}
+			</div>
+		</div>
+		<div class="col-sm-9">
+			<div class="jumbotron">
+				<h4>Welcome to admin panel.</h4>
+				<p>
+					You can manage content for all your projects from one admin panel.
+				</p>
+			</div>
+		</div>
+	</div>
 {/body}

@@ -1,13 +1,21 @@
-var express = require('express');
-var router = express.Router();
+let express = require('express');
+let router = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Web Content' });
-});
+module.exports = function(ctx) {
+	router.get('/', Promise.expressify(async function(req, res) {
+		let data = { title: "Web Content" };
+		data.projects = await ctx.api.project.getProjects("TOKEN", {});
+		res.render('index', data);
+	}));
 
-router.get('/add_project', function(req, res, next) {
-  res.render( 'add_project', { title: 'Create Project' });
-});
+	router.get('/add_project', function(req, res, next) {
+		res.render( 'add_project', { title: 'Create Project' });
+	});
 
-module.exports = router;
+	router.post("/add_project", Promise.expressify(async function(req, res) {
+		await ctx.api.project.addProject("TOKEN", req.body);
+		res.redirect("/");
+	}));
+
+    return router;
+};
