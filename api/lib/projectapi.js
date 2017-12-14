@@ -66,5 +66,6 @@ async function addContent (token, content) {
 	this.ctx.api.essence.validate(content, "content");
 	let collection = this.ctx.driver.openCollection("content");
 	if (!content._id) return collection.insert(content);
-	return collection.update(content);
+	await collection.update(content);
+	return [ content ];
 }
