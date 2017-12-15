@@ -23,7 +23,7 @@
 				<i class="fa fa-plus"></i>&nbsp;
 				Add Content
 			</a>
-			<a href="{prefix}rm_project/{project._id}" class="btn btn-warning btn-block">
+			<a href="{prefix}rm_project/{project._id}" class="btn btn-warning btn-block" data-message="Are you sure remove project?">
 				<i class="fa fa-remove"></i>&nbsp;
 				Delete Project
 			</a>
@@ -49,7 +49,7 @@
 						<button class="btn btn-primary">
 							Save
 						</button>&nbsp;
-						<a href="{prefix}rm_content/{project._id}/{contentCtx._id}" class="btn btn-warning">
+						<a href="{prefix}rm_content/{project._id}/{contentCtx._id}" class="btn btn-warning" data-message="Are you sure remove content?">
 							<i class="fa fa-remove"></i>&nbsp;
 							Content
 						</a>

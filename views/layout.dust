@@ -13,5 +13,42 @@
 
 		<script src="/js/jquery.js"></script>
 		<script src="/js/bootstrap.js" ></script>
+		<script src="/js/bootstrap-dialog.js" ></script>
+		<script>
+			var $body = $("body");
+
+			$body.on("submit", "form[data-message]", popupConfirm);
+			$body.on("click", "a[data-message]", popupConfirm);
+
+			function popupConfirm (e) {
+				var $form = $(this);
+				var isConfirmed = $form.data("confirmed");
+				var message = $form.data("message");
+
+				if (!isConfirmed) {
+					e.preventDefault();
+
+					BootstrapDialog.confirm({
+						title: "Warning!",
+						message: message,
+						type: BootstrapDialog.TYPE_WARNING,
+						callback: function(r) {
+							if (!r) return;
+
+							$form.data("confirmed", true);
+							$form.attr("data-confirmed", true);
+
+							if ($form.is("form")) {
+								$form.find("button").toggleClass("btn-warning").toggleClass("btn-danger");
+							}
+
+							if ($form.is("a")) {
+								$form.toggleClass("btn-warning").toggleClass("btn-danger");
+							}
+						}
+					});
+				}
+			}
+		</script>
 	</body>
 </html>

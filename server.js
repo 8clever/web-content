@@ -74,6 +74,7 @@ function getAllowedFonts () {
 function getAllowedJs () {
 	return {
 		"bootstrap.js": path.join(__dirname, "node_modules/bootstrap/dist/js/bootstrap.min.js"),
+		"bootstrap-dialog.js": path.join(__dirname, "node_modules/bootstrap-dialog/dist/js/bootstrap-dialog.min.js"),
 		"jquery.js": path.join(__dirname, "node_modules/jquery/dist/jquery.min.js"),
 	}
 }

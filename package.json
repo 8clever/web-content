@@ -8,6 +8,7 @@
   "dependencies": {
     "body-parser": "~1.18.2",
     "bootstrap": "^3.3.7",
+    "bootstrap-dialog": "^1.34.6",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "dustjs-helpers": "^1.7.4",
