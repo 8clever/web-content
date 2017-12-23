@@ -8,15 +8,17 @@
 				<span class="icon-bar"></span>
 			</button>
 		</div>
-		<div class="navbar-collapse collapse" id="navbar-main">
-			<ul class="nav navbar-nav navbar-right">
-				<li>
-					<a href="{prefix}logout">
-						<i class="fa fa-sign-out"></i>&nbsp;
-						Sign Out
-					</a>
-				</li>
-			</ul>
-		</div>
+		{^isLoginPage}
+			<div class="navbar-collapse collapse" id="navbar-main">
+				<ul class="nav navbar-nav navbar-right">
+					<li>
+						<a href="{prefix}logout">
+							<i class="fa fa-sign-out"></i>&nbsp;
+							Sign Out
+						</a>
+					</li>
+				</ul>
+			</div>
+		{/isLoginPage}
 	</div>
 </div>

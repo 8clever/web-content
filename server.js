@@ -1,3 +1,4 @@
+let _ = require("lodash");
 let express = require('express');
 let path = require('path');
 let favicon = require('serve-favicon');
@@ -7,8 +8,19 @@ let bodyParser = require('body-parser');
 let lessMiddleware = require('less-middleware');
 let Driver = require("mydb-driver");
 let fs = require("fs");
+let session = require("cookie-session");
+let uuidv1 = require("uuid/v1");
 let ctx = prepareCtx();
 let oneYear = 1000*60*60*24*365;
+
+Authorize.prototype = {
+	store: {},
+	add: AuthorizeAdd,
+	check: AuthorizeCheck,
+	rm: AuthorizeRm
+};
+
+let authorize = new Authorize();
 
 Promise.expressify = expressify;
 
@@ -33,11 +45,53 @@ app.get("/fonts/:file", sendFonts);
 app.use(lessMiddleware(path.join(__dirname, 'public'), { once: true }));
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: oneYear }));
 app.set('views', path.resolve(__dirname, './views'));
-app.use('/', prepareLocals, index);
+app.post("/login", session(getSessionCfg()), login);
+app.get("/logout", session(getSessionCfg()), logout);
+app.use('/', session(getSessionCfg()), auth(), prepareLocals, index);
+app.use(catch403);
 app.use(catch404);
 app.use(errorHandler);
 
 module.exports = app;
+
+function login (req, res, next) {
+	let { login, password } = req.body;
+	let users = _.values(ctx.cfg.users);
+	let user = _.find(users, u => u.login === login && u.password === password);
+	if (!user) {
+		let err = new Error("Invalid login or password");
+		err.status = 403;
+		throw err;
+	}
+	authorize.add(req.session.id);
+	res.redirect("/");
+}
+
+function logout (req, res, next) {
+	authorize.rm(req.session.id);
+	res.redirect("/");
+}
+
+function Authorize () {}
+
+function auth () {
+	return Promise.expressify(async function(req, res) {
+		if (!req.session.id) req.session.id = uuidv1();
+		if (!authorize.check(req.session.id)) {
+			let err = new Error("Access Denied");
+			err.status = 403;
+			throw err;
+		}
+		return "next";
+	});
+}
+
+function getSessionCfg () {
+	return {
+		secret: ctx.cfg.secret,
+		maxAge: 24 * 60 * 60 * 1000 // 24 hours
+	};
+}
 
 function prepareCtx () {
 	let ctx = {};
@@ -80,8 +134,8 @@ function getAllowedJs () {
 }
 
 function prepareLocals (req, res, next) {
-  res.locals.prefix = "/";
-  next();
+	res.locals.prefix = "/";
+	next();
 }
 
 function catch404 (req, res, next) {
@@ -90,7 +144,17 @@ function catch404 (req, res, next) {
 	next(err);
 }
 
+function catch403 (err, req, res, next) {
+	if (err.status !== 403) return next(err);
+	res.render("login", {
+		title: "Authorization",
+		message: err.message,
+		isLoginPage: 1
+	});
+}
+
 function errorHandler (err, req, res, next) {
+	console.error(err);
 	// set locals, only providing error in development
 	res.locals.message = err.message;
 	res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -106,4 +170,18 @@ function expressify (fn) {
 			if (result === "next") return next();
 		}).catch(next);
 	}
+}
+
+function AuthorizeAdd (id) {
+	if (this.check(id)) throw new Error("Session already authorized.");
+	this.store[id] = 1;
+}
+
+function AuthorizeCheck (id) {
+	return this.store[id] && true || false;
+}
+
+function AuthorizeRm (id) {
+	if (!this.check(id)) return;
+	delete this.store[id];
 }
