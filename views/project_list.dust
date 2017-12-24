@@ -12,7 +12,9 @@
 		{/projects}
 	</ul>
 </div>
-<a href="{prefix}add_project" class="btn btn-default btn-block">
-	<i class="fa fa-plus"></i>&nbsp;
-	Add Project
-</a>
+<div class="form-group">
+	<a href="{prefix}add_project" class="btn btn-default btn-block">
+		<i class="fa fa-plus"></i>&nbsp;
+		Add Project
+	</a>
+</div>

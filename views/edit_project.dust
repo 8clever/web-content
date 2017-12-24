@@ -19,14 +19,16 @@
 					</ul>
 				</div>
 			{/gt}
-			<a href="{prefix}project/{project._id}" class="btn btn-default btn-block">
-				<i class="fa fa-plus"></i>&nbsp;
-				Add Content
-			</a>
-			<a href="{prefix}rm_project/{project._id}" class="btn btn-warning btn-block" data-message="Are you sure remove project?">
-				<i class="fa fa-remove"></i>&nbsp;
-				Delete Project
-			</a>
+			<div class="form-group">
+				<a href="{prefix}project/{project._id}" class="btn btn-default btn-block">
+					<i class="fa fa-plus"></i>&nbsp;
+					Add Content
+				</a>
+				<a href="{prefix}rm_project/{project._id}" class="btn btn-warning btn-block" data-message="Are you sure remove project?">
+					<i class="fa fa-remove"></i>&nbsp;
+					Delete Project
+				</a>
+			</div>
 		</div>
 		<div class="col-sm-9">
 			<div class="well">
