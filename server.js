@@ -133,9 +133,18 @@ function getSessionCfg () {
 function prepareCtx () {
 	let ctx = {};
 	ctx.cfg = require("./config.js");
-	ctx.driver = getDriver(ctx);
+	let driver = getDriver(ctx);
+	let collections = {
+		projects: driver.openCollection("projects"),
+		content: driver.openCollection('content')
+	};
+	ctx.driver = { openCollection };
 	ctx.api = require("./api")(ctx);
 	return ctx;
+	function openCollection (name) {
+		if (!collections[name]) throw new Error(`Collection (${name}) does not exists.`);
+		return collections[name];
+	}
 }
 
 function sendFonts(req, res, next) {
