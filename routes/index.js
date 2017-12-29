@@ -52,16 +52,14 @@ module.exports = function(ctx) {
     	return Promise.expressify(async function(req, res) {
 			req.body._id = req.params._id || "";
 			let [ content ] = await ctx.api.project.addContent("TOKEN", req.body);
-			res.redirect(`/project/${content._idproject}/${content._id}`);
+			res.redirect(`/project/${content.idproject}/${content._id}`);
 		});
 	}
 
     function getContent () {
     	return Promise.expressify(async function(req, res) {
     		let contentList = await ctx.api.project.getContent("TOKEN", {
-    			_idproject: {
-    				eq: res.locals.project._id
-				}
+    			idproject: res.locals.project._id
     		});
     		res.locals.contentList = contentList;
     		if (req.params._idcontent) {
@@ -75,7 +73,7 @@ module.exports = function(ctx) {
     function getProject () {
     	return Promise.expressify(async function(req, res) {
 			let [ project ] = await ctx.api.project.getProjects("TOKEN", {
-				_id: { eq: req.params._id }
+				_id: req.params._id
 			});
 
 			if (!project) return Promise.reject(new Error("Not Found"));
@@ -87,7 +85,9 @@ module.exports = function(ctx) {
 
 	function getProjectList () {
 		return Promise.expressify(async function(req, res) {
-			res.locals.projects = await ctx.api.project.getProjects("TOKEN", {});
+			res.locals.projects = await ctx.api.project.getProjects("TOKEN", {
+				iduser: res.locals.user._id
+			});
 			return "next";
 		})
 	}

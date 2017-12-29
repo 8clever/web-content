@@ -33,7 +33,7 @@
 		<div class="col-sm-9">
 			<div class="well">
 				<form method="POST" action="{prefix}edit_content/{contentCtx._id}">
-					<input type="hidden" name="_idproject" value="{project._id}">
+					<input type="hidden" name="idproject" value="{project._id}">
 
 					<div class="form-group">
 						<input type='text' value="{contentCtx.name}" class="form-control" name='name' placeholder="Name" />

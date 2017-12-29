@@ -1,6 +1,6 @@
 module.exports = {
 	_id: "",
-	_idproject: "",
+	idproject: "",
 	name: "",
 	keywords: "",
 	content: ""

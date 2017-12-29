@@ -6,7 +6,6 @@ let logger = require('morgan');
 let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
 let lessMiddleware = require('less-middleware');
-let Driver = require("mydb-driver");
 let fs = require("fs");
 let session = require("cookie-session");
 let uuidv1 = require("uuid/v1");
@@ -17,7 +16,8 @@ Authorize.prototype = {
 	store: {},
 	add: AuthorizeAdd,
 	check: AuthorizeCheck,
-	rm: AuthorizeRm
+	rm: AuthorizeRm,
+	get: AuthorizeGet
 };
 
 let authorize = new Authorize();
@@ -54,6 +54,33 @@ app.use(errorHandler);
 
 module.exports = app;
 
+function getDriver (ctx) {
+	let isProduction = ctx.cfg.env === "production";
+	let prefix = path.join(__dirname, "db/");
+	let PouchDB = isProduction ? require("pouchdb-http") : require("pouchdb");
+	if (!isProduction) PouchDB = PouchDB.defaults({ prefix });
+	PouchDB.plugin(require("pouchdb-find"));
+	return {
+		openCollection: (name) => {
+			if (!isProduction) return new PouchDB(name);
+			if (!(
+				ctx.cfg.pouchdb.url &&
+				ctx.cfg.pouchdb.login &&
+				ctx.cfg.pouchdb.password &&
+				ctx.cfg.pouchdb.protocol
+			)) throw new Error("Invalid env credentials for PouchDB");
+			let url = "";
+			url += ctx.cfg.pouchdb.protocol + "://";
+			url += ctx.cfg.pouchdb.login + ":";
+			url += ctx.cfg.pouchdb.password + "@";
+			url += ctx.cfg.pouchdb.domain + ":";
+			url += ctx.cfg.pouchdb.port + "/";
+			url += name;
+			return new PouchDB(url);
+		}
+	}
+}
+
 function login (req, res, next) {
 	let { login, password } = req.body;
 	let users = _.values(ctx.cfg.users);
@@ -63,7 +90,11 @@ function login (req, res, next) {
 		err.status = 403;
 		throw err;
 	}
-	authorize.add(req.session.id);
+
+	let _u = _.cloneDeep(user);
+	delete _u.password;
+	delete _u.login;
+	authorize.add(req.session.id, { user: _u });
 	res.redirect("/");
 }
 
@@ -96,7 +127,7 @@ function getSessionCfg () {
 function prepareCtx () {
 	let ctx = {};
 	ctx.cfg = require("./config.js");
-	ctx.driver = new Driver (ctx.cfg.mydb);
+	ctx.driver = getDriver(ctx);
 	ctx.api = require("./api")(ctx);
 	return ctx;
 }
@@ -134,7 +165,9 @@ function getAllowedJs () {
 }
 
 function prepareLocals (req, res, next) {
+	let session = authorize.get(req.session.id);
 	res.locals.prefix = "/";
+	res.locals.user = session.user;
 	next();
 }
 
@@ -172,16 +205,20 @@ function expressify (fn) {
 	}
 }
 
-function AuthorizeAdd (id) {
+function AuthorizeAdd (id, session) {
 	if (this.check(id)) throw new Error("Session already authorized.");
-	this.store[id] = 1;
+	this.store[id] = session || 1;
 }
 
 function AuthorizeCheck (id) {
-	return this.store[id] && true || false;
+	return this.get(id) && true || false;
 }
 
 function AuthorizeRm (id) {
 	if (!this.check(id)) return;
 	delete this.store[id];
+}
+
+function AuthorizeGet (id) {
+	return this.store[id] || null;
 }

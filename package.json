@@ -24,7 +24,9 @@
     "less-middleware": "~2.2.1",
     "lodash": "^4.17.4",
     "morgan": "~1.9.0",
-    "mydb-driver": "git+https://github.com/8clever/mydb-drive.git",
+    "pouchdb": "^6.4.1",
+    "pouchdb-find": "^6.4.1",
+    "pouchdb-http": "^6.0.2",
     "serve-favicon": "~2.4.5",
     "uuid": "^3.1.0"
   }

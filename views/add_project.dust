@@ -8,6 +8,7 @@
 		<div class="col-sm-9">
 			<div class="well">
 				<form method="POST">
+					<input type="hidden" name="iduser" value="{user._id}">
 					<div class="form-group">
 						<input type='text' class="form-control" name='name' placeholder="Project Name" />
 					</div>
