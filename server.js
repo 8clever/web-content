@@ -63,20 +63,26 @@ function getDriver (ctx) {
 	return {
 		openCollection: (name) => {
 			if (!isProduction) return new PouchDB(name);
-			if (!(
-				ctx.cfg.pouchdb.url &&
-				ctx.cfg.pouchdb.login &&
-				ctx.cfg.pouchdb.password &&
-				ctx.cfg.pouchdb.protocol
-			)) throw new Error("Invalid env credentials for PouchDB");
+			if (!ctx.cfg.pouchdb.domain)
+				throw new Error("Invalid env.POUCHDB_DOMAIN");
+			if (!ctx.cfg.pouchdb.protocol)
+				throw new Error("Invalid env.POUCHDB_PROTOCOL");
+			if (!ctx.cfg.pouchdb.login)
+				throw new Error("Invalid env.POUCHDB_LOGIN");
+			if (!ctx.cfg.pouchdb.password)
+				throw new Error("Invalid env.POUCHDB_PASSWORD");
 			let url = "";
 			url += ctx.cfg.pouchdb.protocol + "://";
-			url += ctx.cfg.pouchdb.login + ":";
-			url += ctx.cfg.pouchdb.password + "@";
-			url += ctx.cfg.pouchdb.domain + ":";
-			url += ctx.cfg.pouchdb.port + "/";
+			url += ctx.cfg.pouchdb.domain;
+			if (ctx.cfg.pouchdb.port) url += ":" + ctx.cfg.pouchdb.port;
+			url += "/";
 			url += name;
-			return new PouchDB(url);
+			return new PouchDB(url, {
+				auth: {
+					username: ctx.cfg.pouchdb.login,
+					password: ctx.cfg.pouchdb.password
+				}
+			});
 		}
 	}
 }
