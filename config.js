@@ -16,7 +16,7 @@ module.exports = {
 		"8clever": {
 			_id: "2",
 			login: "8clever",
-			password: process.env["8CLEVER_PASSWORD"] || "8clever"
+			password: process.env.CLEVER_PASSWORD || "8clever"
 		}
 	},
 	secret: process.env.SECRET || "secret"
