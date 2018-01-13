@@ -21,6 +21,7 @@
     "express-dustjs": "^1.1.1",
     "font-awesome": "^4.7.0",
     "jquery": "^3.2.1",
+    "js-base64": "^2.4.0",
     "less-middleware": "~2.2.1",
     "lodash": "^4.17.4",
     "morgan": "~1.9.0",

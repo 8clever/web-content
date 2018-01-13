@@ -99,6 +99,15 @@ function getDriver (ctx) {
 		return {
 			getUrl: function () {
 				return this.name + "/";
+			},
+			getHeaders: function() {
+				let { Base64 } = require("js-base64");
+				let user = ctx.cfg.pouchdb.login;
+				let login = ctx.cfg.pouchdb.password;
+				let hash = Base64.encode(`${user}:${login}`);
+				return {
+					"Authorization": `Basic ${hash}`
+				}
 			}
 		}
 	}
