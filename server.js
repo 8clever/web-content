@@ -98,7 +98,7 @@ function getDriver (ctx) {
 	function pluginGetUrl () {
 		return {
 			getUrl: function () {
-				return this.name;
+				return this.name + "/";
 			}
 		}
 	}
