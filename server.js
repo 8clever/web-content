@@ -50,30 +50,49 @@ function getDriver (ctx) {
 	let PouchDB = isProduction ? require("pouchdb-http") : require("pouchdb");
 	if (!isProduction) PouchDB = PouchDB.defaults({ prefix });
 	PouchDB.plugin(require("pouchdb-find"));
+	PouchDB.plugin(require("pouchdb-security"));
+	PouchDB.plugin(require("pouchdb-security-helper"));
 	return {
-		openCollection: (name) => {
-			if (!isProduction) return new PouchDB(name);
-			if (!ctx.cfg.pouchdb.domain)
-				throw new Error("Invalid env.POUCHDB_DOMAIN");
-			if (!ctx.cfg.pouchdb.protocol)
-				throw new Error("Invalid env.POUCHDB_PROTOCOL");
-			if (!ctx.cfg.pouchdb.login)
-				throw new Error("Invalid env.POUCHDB_LOGIN");
-			if (!ctx.cfg.pouchdb.password)
-				throw new Error("Invalid env.POUCHDB_PASSWORD");
-			let url = "";
-			url += ctx.cfg.pouchdb.protocol + "://";
-			url += ctx.cfg.pouchdb.domain;
-			if (ctx.cfg.pouchdb.port) url += ":" + ctx.cfg.pouchdb.port;
-			url += "/";
-			url += name;
-			return new PouchDB(url, {
-				auth: {
-					username: ctx.cfg.pouchdb.login,
-					password: ctx.cfg.pouchdb.password
-				}
-			});
-		}
+		openCollection,
+		addSecuritySync,
+		addSecurity
+	};
+	function openCollection (name) {
+		if (!isProduction) return new PouchDB(name);
+		if (!ctx.cfg.pouchdb.domain)
+			throw new Error("Invalid env.POUCHDB_DOMAIN");
+		if (!ctx.cfg.pouchdb.protocol)
+			throw new Error("Invalid env.POUCHDB_PROTOCOL");
+		if (!ctx.cfg.pouchdb.login)
+			throw new Error("Invalid env.POUCHDB_LOGIN");
+		if (!ctx.cfg.pouchdb.password)
+			throw new Error("Invalid env.POUCHDB_PASSWORD");
+		let url = "";
+		url += ctx.cfg.pouchdb.protocol + "://";
+		url += ctx.cfg.pouchdb.domain;
+		if (ctx.cfg.pouchdb.port) url += ":" + ctx.cfg.pouchdb.port;
+		url += "/";
+		url += name;
+		return new PouchDB(url, {
+			auth: {
+				username: ctx.cfg.pouchdb.login,
+				password: ctx.cfg.pouchdb.password
+			}
+		});
+	}
+	function addSecuritySync (name) {
+		addSecurity(name).catch(console.error);
+	}
+	async function addSecurity (name) {
+		let collection = openCollection(name);
+		let security = collection.security();
+		security.reset();
+		security.members.roles.add("admin");
+		security.members.names.add("admin");
+		security.admins.roles.add("admin");
+		security.admins.names.add("admin");
+		await security.save();
+		console.log(`${name}: Security added succefully.`);
 	}
 }
 
@@ -130,6 +149,7 @@ function prepareCtx () {
 		session: driver.openCollection("session")
 	};
 	ctx.driver = { openCollection };
+	Object.keys(collections).forEach(driver.addSecuritySync);
 	ctx.api = require("./api")(ctx);
 	return ctx;
 	function openCollection (name) {

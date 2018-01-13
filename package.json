@@ -27,6 +27,8 @@
     "pouchdb": "^6.4.1",
     "pouchdb-find": "^6.4.1",
     "pouchdb-http": "^6.0.2",
+    "pouchdb-security": "^2.3.7",
+    "pouchdb-security-helper": "^1.1.1",
     "serve-favicon": "~2.4.5",
     "uuid": "^3.1.0"
   }
