@@ -52,6 +52,7 @@ function getDriver (ctx) {
 	PouchDB.plugin(require("pouchdb-find"));
 	PouchDB.plugin(require("pouchdb-security"));
 	PouchDB.plugin(require("pouchdb-security-helper"));
+	PouchDB.plugin(pluginGetUrl());
 	return {
 		openCollection,
 		addSecuritySync,
@@ -93,6 +94,13 @@ function getDriver (ctx) {
 		security.admins.names.add("admin");
 		await security.save();
 		console.log(`${name}: Security added succefully.`);
+	}
+	function pluginGetUrl () {
+		return {
+			getUrl: function () {
+				return this.name;
+			}
+		}
 	}
 }
 
