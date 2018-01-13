@@ -1,32 +1,22 @@
 let _ = require("lodash");
 let express = require('express');
 let path = require('path');
-let favicon = require('serve-favicon');
 let logger = require('morgan');
 let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
 let lessMiddleware = require('less-middleware');
-let fs = require("fs");
 let session = require("cookie-session");
 let uuidv1 = require("uuid/v1");
 let ctx = prepareCtx();
 let oneYear = 1000*60*60*24*365;
-
-Authorize.prototype = {
-	store: {},
-	add: AuthorizeAdd,
-	check: AuthorizeCheck,
-	rm: AuthorizeRm,
-	get: AuthorizeGet
-};
-
-let authorize = new Authorize();
 
 Promise.expressify = expressify;
 
 // add project essences
 ctx.api.essence.add(require("./essences/project"), "project");
 ctx.api.essence.add(require("./essences/content"), "content");
+ctx.api.essence.add(require("./essences/session"), "session");
+ctx.api.essence.add(require("./essences/session.user"), "session.user");
 
 // routes
 let index = require('./routes/index')(ctx);
@@ -45,9 +35,9 @@ app.get("/fonts/:file", sendFonts);
 app.use(lessMiddleware(path.join(__dirname, 'public'), { once: true }));
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: oneYear }));
 app.set('views', path.resolve(__dirname, './views'));
-app.post("/login", session(getSessionCfg()), login);
-app.get("/logout", session(getSessionCfg()), logout);
-app.use('/', session(getSessionCfg()), auth(), prepareLocals, index);
+app.post("/login", session(getSessionCfg()), Promise.expressify(login));
+app.get("/logout", session(getSessionCfg()), Promise.expressify(logout));
+app.use('/', session(getSessionCfg()), auth(), Promise.expressify(prepareLocals), index);
 app.use(catch403);
 app.use(catch404);
 app.use(errorHandler);
@@ -87,7 +77,7 @@ function getDriver (ctx) {
 	}
 }
 
-function login (req, res, next) {
+async function login (req, res) {
 	let { login, password } = req.body;
 	let users = _.values(ctx.cfg.users);
 	let user = _.find(users, u => u.login === login && u.password === password);
@@ -97,24 +87,24 @@ function login (req, res, next) {
 		throw err;
 	}
 
-	let _u = _.cloneDeep(user);
-	delete _u.password;
-	delete _u.login;
-	authorize.add(req.session.id, { user: _u });
+	let _u = _.pick(user, [ "_id" ]);
+	await ctx.api.authorize.add({
+		user: _u,
+		id: req.session.id
+	});
 	res.redirect("/");
 }
 
-function logout (req, res, next) {
-	authorize.rm(req.session.id);
+async function logout (req, res) {
+	await ctx.api.authorize.rm(req.session.id);
 	res.redirect("/");
 }
-
-function Authorize () {}
 
 function auth () {
 	return Promise.expressify(async function(req, res) {
 		if (!req.session.id) req.session.id = uuidv1();
-		if (!authorize.check(req.session.id)) {
+		let userIsAuthorized = await ctx.api.authorize.check(req.session.id);
+		if (!userIsAuthorized) {
 			let err = new Error("Access Denied");
 			err.status = 403;
 			throw err;
@@ -136,7 +126,8 @@ function prepareCtx () {
 	let driver = getDriver(ctx);
 	let collections = {
 		projects: driver.openCollection("projects"),
-		content: driver.openCollection('content')
+		content: driver.openCollection('content'),
+		session: driver.openCollection("session")
 	};
 	ctx.driver = { openCollection };
 	ctx.api = require("./api")(ctx);
@@ -179,11 +170,11 @@ function getAllowedJs () {
 	}
 }
 
-function prepareLocals (req, res, next) {
-	let session = authorize.get(req.session.id);
+async function prepareLocals (req, res) {
+	let session = await ctx.api.authorize.get(req.session.id);
 	res.locals.prefix = "/";
 	res.locals.user = session.user;
-	next();
+	return "next";
 }
 
 function catch404 (req, res, next) {
@@ -218,22 +209,4 @@ function expressify (fn) {
 			if (result === "next") return next();
 		}).catch(next);
 	}
-}
-
-function AuthorizeAdd (id, session) {
-	if (this.check(id)) throw new Error("Session already authorized.");
-	this.store[id] = session || 1;
-}
-
-function AuthorizeCheck (id) {
-	return this.get(id) && true || false;
-}
-
-function AuthorizeRm (id) {
-	if (!this.check(id)) return;
-	delete this.store[id];
-}
-
-function AuthorizeGet (id) {
-	return this.store[id] || null;
 }

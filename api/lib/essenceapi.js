@@ -63,10 +63,10 @@ function validate (object, name) {
 
 		if (_.isArray(essValue) && _.isArray(objValue)) {
 			objValue.forEach(subObj => {
-				validate(subObj `${name}.${key}`);
+				this.validate(subObj `${name}.${key}`);
 			})
 		} else if (_.isPlainObject(essValue) && _.isPlainObject(objValue)) {
-			validate(objValue, `${name}.${key}`);
+			this.validate(objValue, `${name}.${key}`);
 		} else if (_.isString(essValue) && _.isString(objValue)) {
 
 		} else if (_.isFinite(essValue) && _.isFinite(objValue)) {
