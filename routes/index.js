@@ -17,14 +17,12 @@ module.exports = function(ctx) {
 		res.redirect("/");
 	}));
 
-	router.get("/project/:_id", getProject(), getContent(), Promise.expressify(async function(req, res) {
-		let data = { title: res.locals.project.name };
-		res.render("edit_project", data);
+	router.get("/project/:_id", getProject(), getContent(), prepareTitle, Promise.expressify(async function(req, res) {
+		res.render("edit_project", {});
 	}));
 
-	router.get("/project/:_id/:_idcontent", getProject(), getContent(), Promise.expressify(async function(req, res) {
-		let data = { title: res.locals.contentCtx.name };
-		res.render("edit_project", data);
+	router.get("/project/:_id/:_idcontent", getProject(), getContent(), prepareTitle, Promise.expressify(async function(req, res) {
+		res.render("edit_project", {});
 	}));
 
 	router.post("/edit_content", saveContent());
@@ -33,6 +31,17 @@ module.exports = function(ctx) {
 	router.get("/rm_project/:_id", getProject(), removeProject());
 
     return router;
+
+    function prepareTitle (req, res, next) {
+    	let projectName = res.locals.project.name;
+    	let count = res.locals.contentList.length;
+    	res.locals.title = `${projectName} ${badge(count)}`;
+		next();
+
+    	function badge (text) {
+    		return `<span class="badge">${text}</span>`
+		}
+	}
 
     function removeContent () {
     	return Promise.expressify(async function(req, res) {

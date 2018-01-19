@@ -21,36 +21,50 @@
 		<script>
 			var $body = $("body");
 
-			$body.on("submit", "form[data-message]", popupConfirm);
-			$body.on("click", "a[data-message]", popupConfirm);
+			$body.find("form[data-message]").submit(popupConfirm);
+			$body.find("a[data-message]").click(popupConfirm);
 
 			function popupConfirm (e) {
 				var $form = $(this);
 				var isConfirmed = $form.data("confirmed");
 				var message = $form.data("message");
-
 				if (!isConfirmed) {
-					e.preventDefault();
-
-					BootstrapDialog.confirm({
+					BootstrapDialog.show({
 						title: "Warning!",
 						message: message,
 						type: BootstrapDialog.TYPE_WARNING,
-						callback: function(r) {
-							if (!r) return;
+						buttons: [
+							getCancelButton(),
+							getOkButton()
+						]
+					});
+					return false;
+				}
 
-							$form.data("confirmed", true);
-							$form.attr("data-confirmed", true);
-
+				function getOkButton () {
+					return {
+						label: "Ok",
+						cssClass: "btn-warning",
+						action: function(m) {
 							if ($form.is("form")) {
-								$form.find("button").toggleClass("btn-warning").toggleClass("btn-danger");
+								$form.data("confirmed", 1);
+								$form.attr("data-confirmed", 1);
+								$form.submit();
 							}
-
 							if ($form.is("a")) {
-								$form.toggleClass("btn-warning").toggleClass("btn-danger");
+								window.location.href = $form.attr("href")
 							}
 						}
-					});
+					}
+				}
+
+				function getCancelButton () {
+					return {
+						label: "Cancel",
+						action: function(m) {
+							m.close();
+						}
+					}
 				}
 			}
 		</script>
