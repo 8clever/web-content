@@ -1,6 +1,8 @@
 let express = require('express');
 let _ = require("lodash");
 let router = express.Router();
+let multer = require("multer");
+let upload = multer({ dest: 'uploads/' });
 
 module.exports = function(ctx) {
 	router.get('/', getProjectList(), Promise.expressify(async function(req, res) {
@@ -29,8 +31,16 @@ module.exports = function(ctx) {
 	router.post("/edit_content/:_id", saveContent());
 	router.get("/rm_content/:_id/:_idcontent", getProject(), getContent(), removeContent());
 	router.get("/rm_project/:_id", getProject(), removeProject());
-
+	router.post("/upload/image/:_id/:_idcontent", getProject(), getContent(), prepareTitle, upload.single('image'), Promise.expressify(uploadImage));
     return router;
+
+    async function uploadImage (req, res) {
+    	await ctx.api.project.uploadImageToContent("TOKEN", {
+    		content: res.locals.contentCtx,
+			file: req.file
+		});
+    	res.render("edit_project", { message: "Image uploaded successfully." });
+	}
 
     function prepareTitle (req, res, next) {
     	let projectName = res.locals.project.name;

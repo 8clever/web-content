@@ -1,4 +1,5 @@
-let _ = require("lodash");
+let fs = require("fs");
+let path = require("path");
 
 module.exports = ProjectApi;
 
@@ -8,7 +9,8 @@ ProjectApi.prototype = {
 	getContent,
 	addContent,
 	rmContent,
-	rmProject
+	rmProject,
+	uploadImageToContent
 };
 
 function ProjectApi (ctx) {
@@ -63,4 +65,23 @@ async function addContent (token, content) {
 		await collection.put(content);
 	}
 	return [ content ];
+}
+
+/**
+ *
+ * @param token
+ * @param params.content
+ * @param params.file
+ * @returns {Promise<void>}
+ */
+async function uploadImageToContent (token, params) {
+	this.ctx.api.essence.validate(params.file, "image");
+	let content = this.ctx.driver.openCollection("content");
+	let buff = fs.readFileSync(path.join(__dirname, "../../", params.file.path));
+	params.content._attachments = params.content._attachments || {};
+	params.content._attachments[ params.file.originalname ] = {
+		content_type: params.file.mimetype,
+		data: buff
+	};
+	await content.put(params.content);
 }

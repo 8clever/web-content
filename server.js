@@ -17,6 +17,7 @@ ctx.api.essence.add(require("./essences/project"), "project");
 ctx.api.essence.add(require("./essences/content"), "content");
 ctx.api.essence.add(require("./essences/session"), "session");
 ctx.api.essence.add(require("./essences/session.user"), "session.user");
+ctx.api.essence.add(require("./essences/image"), "image");
 
 // routes
 let index = require('./routes/index')(ctx);
