@@ -32,14 +32,21 @@ module.exports = function(ctx) {
 		getProject(),
 		getContent(),
 		prepareTitle,
-		Promise.expressify(renderContent)
+		renderContent()
 	);
 	router.get(
 		"/project/:_id/:_idcontent",
 		getProject(),
 		getContent(),
 		prepareTitle,
-		Promise.expressify(renderContent)
+		renderContent()
+	);
+	router.get(
+		"/project/:_id/:_idcontent/images",
+		getProject(),
+		getContent(),
+		prepareTitle,
+		renderImages()
 	);
 	router.post(
 		"/edit_content",
@@ -67,7 +74,7 @@ module.exports = function(ctx) {
 		prepareTitle,
 		upload.single('image'),
 		Promise.expressify(uploadImage),
-		Promise.expressify(renderContent)
+		renderImages("redirect")
 	);
 	router.get(
 		"/remove/image/:_id/:_idcontent/:_idimage",
@@ -75,7 +82,7 @@ module.exports = function(ctx) {
 		getContent(),
 		prepareTitle,
 		Promise.expressify(removeImage),
-		Promise.expressify(renderContent)
+		renderImages("redirect")
 	);
     return router;
 
@@ -89,9 +96,22 @@ module.exports = function(ctx) {
 		return "next";
 	}
 
-    async function renderContent (req, res) {
-    	let data = {};
-		res.render("edit_project", data);
+	function renderImages (direction) {
+    	return Promise.expressify(async function(req, res) {
+			if (direction === "redirect") {
+				return res.redirect(`/project/${res.locals.project._id}/${res.locals.contentCtx._id}/images`);
+			}
+			res.render("content_images", { isImagesPage: 1 });
+		})
+	}
+
+	function renderContent (direction) {
+    	return Promise.expressify(async function(req, res) {
+			if (direction === "redirect") {
+				return res.redirect(`/project/${res.locals.project._id}/${res.locals.contentCtx._id}`);
+			}
+			res.render("edit_project", {});
+		});
 	}
 
     async function uploadImage (req, res) {
@@ -106,7 +126,8 @@ module.exports = function(ctx) {
     function prepareTitle (req, res, next) {
     	let projectName = res.locals.project.name;
     	let count = res.locals.contentList.length;
-    	res.locals.title = `${projectName} ${badge(count)}`;
+    	res.locals.title = projectName;
+    	res.locals.subtitle = badge(count);
 		next();
 
     	function badge (text) {

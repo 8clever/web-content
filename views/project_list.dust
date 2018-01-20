@@ -1,4 +1,10 @@
 <div class="form-group">
+	<a href="{prefix}add_project" class="btn btn-default btn-block">
+		<i class="fa fa-plus"></i>&nbsp;
+		Add Project
+	</a>
+</div>
+<div class="form-group">
 	<ul class="nav nav-pills nav-stacked">
 		{#projects}
 			<li>
@@ -11,10 +17,4 @@
 			</li>
 		{/projects}
 	</ul>
-</div>
-<div class="form-group">
-	<a href="{prefix}add_project" class="btn btn-default btn-block">
-		<i class="fa fa-plus"></i>&nbsp;
-		Add Project
-	</a>
 </div>

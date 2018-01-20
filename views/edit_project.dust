@@ -2,107 +2,34 @@
 
 {<body}
 	<div class="row">
-		<div class="col-sm-3">
-			{@gt key=contentList.length value=0}
-				<div class="form-group">
-					<ul class="nav nav-pills nav-stacked">
-						{#contentList}
-							<li class="{@eq key=_id value=contentCtx._id }active{/eq}">
-								<a href="{prefix}project/{project._id}/{_id}" class="text-right">
-								<span class="pull-left">
-									{name}
-								</span>
-									<i class="fa fa-chevron-right"></i>
-								</a>
-							</li>
-						{/contentList}
-					</ul>
-				</div>
-			{/gt}
-			<div class="form-group">
-				<a href="{prefix}project/{project._id}" class="btn btn-default btn-block">
-					<i class="fa fa-plus"></i>&nbsp;
-					Add Content
-				</a>
-				<a href="{prefix}rm_project/{project._id}" class="btn btn-warning btn-block" data-message="Are you sure remove project?">
-					<i class="fa fa-remove"></i>&nbsp;
-					Delete Project
-				</a>
-			</div>
+		<div class="col-md-2 col-sm-3">
+			{> "content_list" /}
 		</div>
-		<div class="col-sm-9">
-			{#contentCtx._id}
-				<ul class="nav nav-tabs">
-					<li class="active">
-						<a href="#content" data-toggle="tab">
+		<div class="col-md-10 col-sm-9">
+			<div class="well">
+				<form method="POST" action="{prefix}edit_content/{contentCtx._id}">
+					<input type="hidden" name="idproject" value="{project._id}">
+					<div class="form-group">
+						<input type='text' value="{contentCtx.name}" class="form-control" name='name' placeholder="Name" />
+					</div>
+					<div class="form-group">
+						<input type='text' value="{contentCtx.keywords}" class="form-control" name='keywords' placeholder="Key Words" />
+					</div>
+					<div class="form-group">
+						<textarea class="form-control" name='content' rows="15" placeholder="Your Text">
+							{contentCtx.content}
+						</textarea>
+					</div>
+					<div class="text-right form-group">
+						<button class="btn btn-primary">
+							Save
+						</button>&nbsp;
+						<a href="{prefix}rm_content/{project._id}/{contentCtx._id}" class="btn btn-warning" data-message="Are you sure remove content?">
+							<i class="fa fa-remove"></i>&nbsp;
 							Content
 						</a>
-					</li>
-					<li>
-						<a href="#images" data-toggle="tab">
-							Images
-						</a>
-					</li>
-				</ul>
-				<br>
-			{/contentCtx._id}
-			<div class="tab-content">
-				<div class="tab-pane active" id="content">
-					<div class="well">
-						<form method="POST" action="{prefix}edit_content/{contentCtx._id}">
-							<input type="hidden" name="idproject" value="{project._id}">
-
-							<div class="form-group">
-								<input type='text' value="{contentCtx.name}" class="form-control" name='name' placeholder="Name" />
-							</div>
-							<div class="form-group">
-								<input type='text' value="{contentCtx.keywords}" class="form-control" name='keywords' placeholder="Key Words" />
-							</div>
-							<div class="form-group">
-								<textarea class="form-control" name='content' rows="15" placeholder="Your Text">
-									{contentCtx.content}
-								</textarea>
-							</div>
-							<div class="text-right form-group">
-								<button class="btn btn-primary">
-									Save
-								</button>&nbsp;
-								<a href="{prefix}rm_content/{project._id}/{contentCtx._id}" class="btn btn-warning" data-message="Are you sure remove content?">
-									<i class="fa fa-remove"></i>&nbsp;
-									Content
-								</a>
-							</div>
-						</form>
 					</div>
-				</div>
-				<div id="images" class="tab-pane" >
-					<div class="well">
-						<form method="post" class="form-inline" action="{prefix}upload/image/{project._id}/{contentCtx._id}" enctype="multipart/form-data">
-							<div class="form-group">
-								<input type="file" name="image" accept="image/*" class="form-control">
-							</div>
-							<div class="form-group">
-								<button type="submit" class="btn btn-primary">
-									Upload
-								</button>
-							</div>
-						</form>
-					</div>
-					<div class="row">
-						{#contentCtx.images}
-							<div class="col-sm-4">
-								<div class="thumbnail text-right">
-									<img class="img-responsive" src="/img/{id}">
-									<a href="{prefix}remove/image/{project._id}/{contentCtx._id}/{id}"
-									   data-message="Are you sure remove image?"
-									   class="btn btn-xs btn-danger">
-										<i class="fa fa-remove"></i>
-									</a>
-								</div>
-							</div>
-						{/contentCtx.images}
-					</div>
-				</div>
+				</form>
 			</div>
 		</div>
 	</div>

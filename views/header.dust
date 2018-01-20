@@ -1,7 +1,7 @@
 <div class="navbar navbar-default navbar-fixed-top">
-	<div class="container">
+	<div class="container-fluid">
 		<div class="navbar-header">
-			<a href="{prefix}" class="navbar-brand">{title|s}</a>
+			<a href="{prefix}" class="navbar-brand">{title}&nbsp;{subtitle|s}</a>
 			<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
