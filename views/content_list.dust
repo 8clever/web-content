@@ -28,7 +28,7 @@
 		<ul class="nav nav-pills nav-stacked">
 			{#contentList}
 				<li class="{@eq key=_id value=contentCtx._id }active{/eq}">
-					<a href="{prefix}project/{project._id}/{_id}" class="text-right">
+					<a href="{prefix}project/{project._id}/{_id}{@isImagesPage}/images{/isImagesPage}" class="text-right">
 								<span class="pull-left">
 									{name}
 								</span>
