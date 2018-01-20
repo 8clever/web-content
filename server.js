@@ -233,7 +233,7 @@ function catch403 (err, req, res, next) {
 	if (err.status !== 403) return next(err);
 	res.render("login", {
 		title: "Authorization",
-		message: err.message,
+		errMessage: err.message,
 		isLoginPage: 1
 	});
 }

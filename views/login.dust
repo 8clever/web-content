@@ -3,11 +3,8 @@
 {<body}
 	<div class="row">
 		<div class="col-sm-6 col-sm-offset-3">
-			{#message}
-				<div class="alert alert-danger">
-					<p>{message}</p>
-				</div>
-			{/message}
+			<br>
+			<br>
 			<div class="well">
 				<form method="POST" action="{prefix}login">
 					<div class="form-group">
