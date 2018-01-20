@@ -33,6 +33,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.get("/js/:file", sendJs);
 app.get("/fonts/:file", sendFonts);
+app.get("/img/:_idimage", Promise.expressify(getImage));
 app.use(lessMiddleware(path.join(__dirname, 'public'), { once: true }));
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: oneYear }));
 app.set('views', path.resolve(__dirname, './views'));
@@ -44,6 +45,11 @@ app.use(catch404);
 app.use(errorHandler);
 
 module.exports = app;
+
+async function getImage (req, res) {
+	let imgData = await ctx.api.image.getImage(null, req.params._idimage);
+	res.send(imgData);
+}
 
 function getDriver (ctx) {
 	let isProduction = ctx.cfg.env === "production";
@@ -164,7 +170,8 @@ function prepareCtx () {
 	let collections = {
 		projects: driver.openCollection("projects"),
 		content: driver.openCollection('content'),
-		session: driver.openCollection("session")
+		session: driver.openCollection("session"),
+		image: driver.openCollection("image")
 	};
 	ctx.driver = { openCollection };
 	Object.keys(collections).forEach(driver.addSecuritySync);
@@ -205,6 +212,7 @@ function getAllowedJs () {
 		"bootstrap.js": path.join(__dirname, "node_modules/bootstrap/dist/js/bootstrap.min.js"),
 		"bootstrap-dialog.js": path.join(__dirname, "node_modules/bootstrap-dialog/dist/js/bootstrap-dialog.min.js"),
 		"jquery.js": path.join(__dirname, "node_modules/jquery/dist/jquery.min.js"),
+		"pace.js": path.join(__dirname, "node_modules/pace-js/pace.min.js")
 	}
 }
 
@@ -233,7 +241,7 @@ function catch403 (err, req, res, next) {
 function errorHandler (err, req, res, next) {
 	console.error(err);
 	// set locals, only providing error in development
-	res.locals.message = err.message;
+	res.locals.errMessage = err.message;
 	res.locals.error = req.app.get('env') === 'development' ? err : {};
 
 	// render the error page

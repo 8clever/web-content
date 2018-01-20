@@ -31,11 +31,6 @@
 			</div>
 		</div>
 		<div class="col-sm-9">
-			{#message}
-				<div class="alert alert-info">
-					{message}
-				</div>
-			{/message}
 			{#contentCtx._id}
 				<ul class="nav nav-tabs">
 					<li class="active">
@@ -92,6 +87,20 @@
 								</button>
 							</div>
 						</form>
+					</div>
+					<div class="row">
+						{#contentCtx.images}
+							<div class="col-sm-4">
+								<div class="thumbnail text-right">
+									<img class="img-responsive" src="/img/{id}">
+									<a href="{prefix}remove/image/{project._id}/{contentCtx._id}/{id}"
+									   data-message="Are you sure remove image?"
+									   class="btn btn-xs btn-danger">
+										<i class="fa fa-remove"></i>
+									</a>
+								</div>
+							</div>
+						{/contentCtx.images}
 					</div>
 				</div>
 			</div>

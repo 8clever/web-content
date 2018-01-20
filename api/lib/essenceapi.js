@@ -1,5 +1,7 @@
 let _ = require("lodash");
-
+let TYPES = {
+	OPTIONAL: "optional"
+};
 module.exports = EssenceApi;
 
 EssenceApi.prototype = {
@@ -51,17 +53,19 @@ function validate (object, name) {
 	let essenceKeys = Object.keys(this.essences[name]);
 	let objectKeys = Object.keys(object);
 
-	if (essenceKeys.length !== objectKeys.length)
+	if (essenceKeys.length < objectKeys.length)
 		throw new Error(`Essence key length not equal Object key length`);
 
 	essenceKeys.forEach(key => {
 		let essValue = this.essences[name][key];
 		let objValue = object[key];
 
-		if (objValue === undefined)
-			throw new Error(`Object not have field (${key}).`);
+		// start to validate keys
+		if (essValue === TYPES.OPTIONAL) {
 
-		if (_.isArray(essValue) && _.isArray(objValue)) {
+		} else if (objValue === undefined) {
+			throw new Error(`Object not have field (${key}).`);
+		} else if (_.isArray(essValue) && _.isArray(objValue)) {
 			objValue.forEach(subObj => {
 				this.validate(subObj `${name}.${key}`);
 			})

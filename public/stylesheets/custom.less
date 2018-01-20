@@ -1,3 +1,34 @@
 #maincontent {
   margin-top: 80px;
 }
+
+#messages {
+  position: fixed;
+  right: 0;
+  top: 80px;
+  z-index: 1030;
+}
+
+/* This is a compiled file, you should be editing the file in the templates directory */
+.pace {
+  -webkit-pointer-events: none;
+  pointer-events: none;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.pace-inactive {
+  display: none;
+}
+
+.pace .pace-progress {
+  background: #ee3148;
+  position: fixed;
+  z-index: 2000;
+  top: 64px;
+  right: 100%;
+  width: 100%;
+  height: 2px;
+}
