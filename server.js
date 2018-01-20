@@ -48,6 +48,7 @@ module.exports = app;
 
 async function getImage (req, res) {
 	let imgData = await ctx.api.image.getImage(null, req.params._idimage);
+	res.setHeader('Cache-Control', `public, max-age=${oneYear}`);
 	res.send(imgData);
 }
 
