@@ -1,0 +1,110 @@
+{> "layout" /}
+
+{<body}
+	<div class="row">
+		<div class="col-md-2 col-sm-3 scroll">
+			{> "content_list" /}
+		</div>
+		<div class="col-md-10 col-sm-9 scroll">
+			<!--EDIT CONTENT-->
+			<div class="well">
+				<form method="POST" action="{prefix}edit_content/{contentCtx._id}">
+					<input type="hidden" name="idproject" value="{project._id}">
+					<div class="form-group">
+						<input type='text' value="{contentCtx.name}" class="form-control" name='name' placeholder="Name" />
+					</div>
+					<div class="form-group">
+						<div class="input-group">
+							<select class="form-control" name="idcategory">
+								<option value="">Not Selected</option>
+								{#categories}
+									<option value="{_id}" {#_t_selected}selected{/_t_selected}>
+										{name}
+									</option>
+								{/categories}
+							</select>
+							<div class="input-group-btn">
+								<div class="btn btn-default" data-toggle="modal" data-target="#add-category-modal">
+									<i class="fa fa-plus"></i>
+								</div>
+							</div>
+							<div class="input-group-btn">
+								<div class="btn btn-default" data-toggle="modal" data-target="#rm-category-modal">
+									<i class="fa fa-trash"></i>
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<div class="form-group">
+						<input type='text' value="{contentCtx.keywords}" class="form-control" name='keywords' placeholder="Key Words" />
+					</div>
+					<div class="form-group">
+						<textarea class="form-control" name='content' rows="15" placeholder="Your Text">
+							{contentCtx.content}
+						</textarea>
+					</div>
+					<div class="text-right form-group">
+						<button class="btn btn-primary">
+							Save
+						</button>&nbsp;
+						<a href="{prefix}rm_content/{project._id}/{contentCtx._id}" class="btn btn-warning" data-message="Are you sure remove content?">
+							<i class="fa fa-remove"></i>&nbsp;
+							Content
+						</a>
+					</div>
+				</form>
+			</div>
+
+			<!--ADD CATEGORY-->
+			<form method="post" action="{prefix}category/add" class="modal fade" id="add-category-modal">
+				<input type="hidden" name="idproject" value="{project._id}">
+
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<div class="close" data-dismiss="modal" aria-hidden="true">&times;</div>
+							<h4 class="modal-title">Add Category</h4>
+						</div>
+						<div class="modal-body">
+							<div class="form-group">
+								<input class="form-control" name="name" placeholder="Category Name">
+							</div>
+						</div>
+						<div class="modal-footer">
+							<div class="btn btn-default" data-dismiss="modal">Cancel</div>
+							<button type="submit" class="btn btn-primary">Save</button>
+						</div>
+					</div>
+				</div>
+			</form>
+
+			<!--RM CATEGORY-->
+			<form method="post" action="{prefix}category/rm" class="modal fade" id="rm-category-modal">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<div class="close" data-dismiss="modal" aria-hidden="true">&times;</div>
+							<h4 class="modal-title">Remove Category</h4>
+						</div>
+						<div class="modal-body">
+							<div class="form-group">
+								<select class="form-control" name="_idcategory">
+									<option value="">Not Selected</option>
+									{#categories}
+										<option value="{_id}">{name}</option>
+									{/categories}
+								</select>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<div class="btn btn-default" data-dismiss="modal">Cancel</div>
+							<button type="submit" class="btn btn-warning">Remove</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+{/body}
+

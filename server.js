@@ -18,9 +18,11 @@ ctx.api.essence.add(require("./essences/content"), "content");
 ctx.api.essence.add(require("./essences/session"), "session");
 ctx.api.essence.add(require("./essences/session.user"), "session.user");
 ctx.api.essence.add(require("./essences/image"), "image");
+ctx.api.essence.add(require("./essences/category"), "category");
 
 // routes
 let index = require('./routes/index')(ctx);
+let category = require('./routes/category')(ctx);
 
 let app = express();
 let dust = require("express-dustjs");
@@ -39,7 +41,7 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: oneYear }));
 app.set('views', path.resolve(__dirname, './views'));
 app.post("/login", session(getSessionCfg()), Promise.expressify(login));
 app.get("/logout", session(getSessionCfg()), Promise.expressify(logout));
-app.use('/', session(getSessionCfg()), auth(), Promise.expressify(prepareLocals), index);
+app.use('/', session(getSessionCfg()), auth(), Promise.expressify(prepareLocals), index, category);
 app.use(catch403);
 app.use(catch404);
 app.use(errorHandler);
@@ -153,6 +155,7 @@ function auth () {
 			err.status = 403;
 			throw err;
 		}
+		req.token = "TOKEN";
 		return "next";
 	});
 }
@@ -172,7 +175,8 @@ function prepareCtx () {
 		projects: driver.openCollection("projects"),
 		content: driver.openCollection('content'),
 		session: driver.openCollection("session"),
-		image: driver.openCollection("image")
+		image: driver.openCollection("image"),
+		category: driver.openCollection("category")
 	};
 	ctx.driver = { openCollection };
 	Object.keys(collections).forEach(driver.addSecuritySync);
@@ -221,6 +225,10 @@ async function prepareLocals (req, res) {
 	let session = await ctx.api.authorize.get(req.session.id);
 	res.locals.prefix = "/";
 	res.locals.user = session.user;
+	res.goBack = function () {
+		let backURL = req.header('Referer') || '/';
+		res.redirect(backURL);
+	};
 	return "next";
 }
 

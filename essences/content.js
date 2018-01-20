@@ -3,6 +3,7 @@ module.exports = {
 	_rev: "optional",
 	images: "optional",
 	idproject: "",
+	idcategory: "",
 	name: "",
 	keywords: "",
 	content: ""

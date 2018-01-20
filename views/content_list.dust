@@ -27,14 +27,22 @@
 	<div class="form-group">
 		<ul class="nav nav-pills nav-stacked">
 			{#contentList}
-				<li class="{@eq key=_id value=contentCtx._id }active{/eq}">
-					<a href="{prefix}project/{project._id}/{_id}{#isImagesPage}/images{/isImagesPage}" class="text-right">
-								<span class="pull-left">
-									{name}
-								</span>
-						<i class="fa fa-chevron-right"></i>
-					</a>
-				</li>
+				<b class="text-primary">
+					{name}&nbsp;
+					<i class="fa fa-caret-down"></i>
+				</b>
+				<hr class="hr0">
+				{#items}
+					<li class="{@eq key=_id value=contentCtx._id }active{/eq}">
+						<a href="{prefix}project/{project._id}/{_id}{#isImagesPage}/images{/isImagesPage}" class="text-right">
+							<span class="pull-left">
+								{name}
+							</span>
+							<i class="fa fa-chevron-right"></i>
+						</a>
+					</li>
+				{/items}
+				<div class="form-group"></div>
 			{/contentList}
 		</ul>
 	</div>
