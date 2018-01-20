@@ -2,9 +2,7 @@
 
 {<body}
 	<div class="row">
-		<div class="col-md-4 col-sm-6 col-sm-offset-3 col-md-offset-4">
-			<br>
-			<br>
+		<div class="col-md-4 col-sm-6 col-sm-offset-3 col-md-offset-4 scroll">
 			<div class="well">
 				<form method="POST" action="{prefix}login">
 					<div class="form-group">

@@ -2,10 +2,10 @@
 
 {<body}
 	<div class="row">
-		<div class="col-md-2 col-sm-3">
+		<div class="col-md-2 col-sm-3 scroll">
 			{> "project_list" /}
 		</div>
-		<div class="col-md-10 col-sm-9">
+		<div class="col-md-10 col-sm-9 scroll">
 			<div class="well">
 				<form method="POST">
 					<input type="hidden" name="iduser" value="{user._id}">
