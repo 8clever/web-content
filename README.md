@@ -9,3 +9,5 @@ $ cd web-content
 $ npm i
 $ node app
 ```
+
+update heroku to stack-20
