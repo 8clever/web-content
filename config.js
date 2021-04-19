@@ -1,12 +1,5 @@
 module.exports = {
 	env: process.env.ENV || "dev",
-	pouchdb: {
-		protocol: process.env.POUCHDB_PROTOCOL,
-		domain: process.env.POUCHDB_DOMAIN,
-		port: process.env.POUCHDB_PORT,
-		login: process.env.POUCHDB_LOGIN,
-		password: process.env.POUCHDB_PASSWORD
-	},
 	users: {
 		admin: {
 			_id: "1",
