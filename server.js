@@ -8,7 +8,7 @@ let lessMiddleware = require('less-middleware');
 let session = require("cookie-session");
 let uuidv1 = require("uuid/v1");
 let oneYear = 1000*60*60*24*365;
-const drive = require("drive/dist");
+const drive = require("drive");
 
 Promise.expressify = expressify;
 
